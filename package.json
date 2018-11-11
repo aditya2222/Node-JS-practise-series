@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "repository": {
     "type": "git",
@@ -15,5 +15,9 @@
   "bugs": {
     "url": "https://github.com/aditya2222/Node-JS-Understanding-Basics/issues"
   },
-  "homepage": "https://github.com/aditya2222/Node-JS-Understanding-Basics#readme"
+  "homepage": "https://github.com/aditya2222/Node-JS-Understanding-Basics#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "nodemon": "^1.18.6"
+  }
 }
