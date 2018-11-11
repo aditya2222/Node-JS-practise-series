@@ -1,0 +1,19 @@
+{
+  "name": "understandingbasics",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aditya2222/Node-JS-Understanding-Basics.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aditya2222/Node-JS-Understanding-Basics/issues"
+  },
+  "homepage": "https://github.com/aditya2222/Node-JS-Understanding-Basics#readme"
+}

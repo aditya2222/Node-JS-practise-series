@@ -13,7 +13,6 @@ const requestHandler = (req, res) => {
     if (url === '/message' && method === 'POST') {
         const body = [];
         req.on('data', (chunk) => {
-            console.log(chunk)
             body.push(chunk)
         })
         return req.on('end', () => {
