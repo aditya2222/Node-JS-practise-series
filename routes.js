@@ -22,6 +22,7 @@ const requestHandler = (req, res) => {
             fs.writeFile('message.txt', message, (error) => {
                 if (error) {
                     console.log(error)
+
                 }
                 else {
                     res.statusCode = 302;
