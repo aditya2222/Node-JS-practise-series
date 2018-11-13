@@ -16,7 +16,9 @@
     "url": "https://github.com/aditya2222/Node-JS-Understanding-Basics/issues"
   },
   "homepage": "https://github.com/aditya2222/Node-JS-Understanding-Basics#readme",
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.16.4"
+  },
   "devDependencies": {
     "nodemon": "^1.18.6"
   }
