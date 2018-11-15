@@ -1,26 +1,20 @@
 {
-  "name": "understandingbasics",
+  "name": "nodejs-complete-guide",
   "version": "1.0.0",
-  "description": "",
+  "description": "Complete Node.js Guide",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js",
+    "start-server": "node app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/aditya2222/Node-JS-Understanding-Basics.git"
-  },
-  "author": "",
+  "author": "Aditya Singh",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/aditya2222/Node-JS-Understanding-Basics/issues"
+  "devDependencies": {
+    "nodemon": "^1.18.3"
   },
-  "homepage": "https://github.com/aditya2222/Node-JS-Understanding-Basics#readme",
   "dependencies": {
     "body-parser": "^1.18.3",
-    "express": "^4.16.4"
-  },
-  "devDependencies": {
-    "nodemon": "^1.18.6"
+    "express": "^4.16.3"
   }
 }
