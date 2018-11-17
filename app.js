@@ -8,7 +8,7 @@ const app = express();
 // Specifying pug as our templating engine
 // app.set('view engine', 'pug')
 // Specifying handlebars as our templating engine
-app.engine('handlebars', expressHbs());
+app.engine('handlebars', expressHbs({layoutsDir: 'views/layouts/', defaultLayout: 'main-layout'}));
 app.set('view engine', 'handlebars');
 app.set('views', 'views');
 
