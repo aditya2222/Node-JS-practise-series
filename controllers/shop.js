@@ -40,3 +40,10 @@ exports.getCheckout = (req, res, next) => {
     pageTitle: 'Checkout'
   });
 };
+
+exports.getProduct = (req, res, next) => {
+  const productId = req.params.productId;
+  console.log(productId)
+  res.redirect('/');
+};
+
