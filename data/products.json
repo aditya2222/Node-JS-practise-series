@@ -1,1 +1,9 @@
-[{"id":"12345","title":" A Book edited","imageUrl":" https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg ","description":" This is an awesome book! ","price":" 19 "},{"title":"sometitle","imageUrl":"https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg","description":"this is some other product","price":"11","id":"0.8104235567993252"}]
+[
+  {
+    "id": "12345",
+    "title": " A Book edited",
+    "imageUrl": " https://www.publicdomainpictures.net/pictures/10000/velka/1-1210009435EGmE.jpg ",
+    "description": " This is an awesome book! ",
+    "price": " 19 "
+  }
+]
