@@ -83,11 +83,16 @@ exports.getCheckout = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
     const productId = req.params.productId;
-    console.log(Product.findById(productId, product => {
+    Product.findById(productId)
+    .then(([rows, fieldData]) => {
+        console.log(rows)
         res.render('shop/product-detail', {
-            product: product,
-            pageTitle: product.title,
-            path: '/products'
+        product: rows[0],
+        pageTitle: rows[0].title,
+        path: '/products'
         })
-    }))
+    })
+    .catch((error) => {
+        console.log(error)
+    })
 };
