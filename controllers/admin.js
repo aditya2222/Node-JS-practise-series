@@ -23,12 +23,12 @@ exports.postAddProduct = (req, res, next) => {
         imageUrl: imageUrl,
         description: description
     })
-    .then((result) => {
-        console.log('Product Created')
-    })
-    .catch((error) => {
-        console.log(error)
-    })
+        .then((result) => {
+            console.log('Product Created')
+        })
+        .catch((error) => {
+            console.log(error)
+        })
 };
 
 exports.getEditProduct = (req, res, next) => {
@@ -65,13 +65,17 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-    Product.fetchAll(products => {
-        res.render('admin/products', {
-            prods: products,
-            pageTitle: 'Admin Products',
-            path: '/admin/products'
-        });
-    });
+    Product.findAll()
+        .then((products) => {
+            res.render('admin/products', {
+                prods: products,
+                pageTitle: 'Admin Products',
+                path: '/admin/products'
+            });
+        })
+        .catch((error) => {
+            console.log(error)
+        })
 };
 
 exports.postDeleteProduct = (req, res, next) => {
