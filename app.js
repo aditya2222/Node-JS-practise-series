@@ -3,6 +3,8 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const sequelize = require('./util/database')
+const Product = require('./models/product')
+const User = require('./models/User')
 
 const errorController = require('./controllers/error');
 
@@ -22,13 +24,25 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-sequelize.sync()
-.then((result) => {
-	app.listen(3000);
+// Establishing relations before sync
+Product.belongsTo(User, {
+	constraints: true,
+	// cascade means delete associated product also if user is deleted
+	onDelete: 'CASCADE'
 })
-.catch((error) => {
-	console.log(error)
+
+User.hasMany(Product)
+
+
+sequelize.sync({
+	force: true
 })
+	.then((result) => {
+		app.listen(3000);
+	})
+	.catch((error) => {
+		console.log(error)
+	})
 
 
 
