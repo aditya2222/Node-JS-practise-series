@@ -12,8 +12,15 @@ constructor(title, price, description, imageUrl){
 
 save(){
 
-
-
+const db = getDb()
+// if the collection does not exist it will be created
+return db.collection('products').insertOne(this)
+	.then((result)=>{
+		console.log(result)
+	})
+	.catch((error)=>{
+		console.log(error)	
+	})
 }
 
 

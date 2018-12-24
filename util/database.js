@@ -10,7 +10,7 @@ MongoClient.connect('mongodb+srv://admin:tiktik123@cluster0-5t9yf.mongodb.net/te
 .then((client)=>{
 console.log('Connected')
 _db = client.db()
-//callback()
+callback()
 })
 .catch((err)=>{
 console.log(err)
