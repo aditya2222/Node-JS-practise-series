@@ -9,7 +9,7 @@ constructor(title, price, description, imageUrl, id){
 	this.price = price
 	this.description = description
 	this.imageUrl = imageUrl	
-	this._id = id
+	this._id = id ? new mongodb.ObjectId(id) : null
 }
 
 save(){
@@ -19,7 +19,7 @@ let dbOp
 if(this._id){
 
 // Update the product
-dbOp = db.collection('products').updateOne({_id:mongodv.ObjectId(this._id) }, {$set: this})
+dbOp = db.collection('products').updateOne({_id:this._id }, {$set: this})
 }
 
 else{
@@ -62,6 +62,22 @@ return db.collection('products').find({_id:mongodb.ObjectId(prodId)}).next()
 	.catch((error)=>{
 		console.log(error)	
 	})
+
+}
+
+
+static deleteById(prodId){
+
+const db = getDb()
+return db.collection('products').deleteOne({_id: mongodb.ObjectId(prodId)})
+	.then((product)=>{
+		console.log('Deleted')
+	})
+	.catch((error)=>{
+		console.log(error)	
+	})
+
+
 
 }
 
