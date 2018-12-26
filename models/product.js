@@ -4,18 +4,31 @@ const mongodb = require('mongodb')
 
 class Product {
 
-constructor(title, price, description, imageUrl){
+constructor(title, price, description, imageUrl, id){
 	this.title = title
 	this.price = price
 	this.description = description
 	this.imageUrl = imageUrl	
+	this._id = id
 }
 
 save(){
 
 const db = getDb()
+let dbOp
+if(this._id){
+
+// Update the product
+dbOp = db.collection('products').updateOne({_id:mongodv.ObjectId(this._id) }, {$set: this})
+}
+
+else{
+
+dbOp = db.collection('products').insertOne(this)
+
+}
 // if the collection does not exist it will be created
-return db.collection('products').insertOne(this)
+return dbOp
 	.then((result)=>{
 		console.log(result)
 	})
