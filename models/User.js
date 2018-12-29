@@ -74,7 +74,23 @@ class User {
 	addOrder(){
 		
 		const db = getDb()
-		return db.collection('orders').insertOne(this.cart)
+		return this.getCart()
+			.then((products)=>{
+				
+				const order = {
+				
+					items: products,
+					user: {
+					
+						_id: mongodb.ObjectId(this._id),
+						name: this.name
+					}
+				}
+
+				return db.collection('orders').insertOne(order)
+			
+			})
+
 			.then((response)=>{	
 				this.cart = {items:[]}
 				db.collection('users').updateOne({_id: this._id}, {$set:{cart:{items:[]}}})
@@ -84,6 +100,15 @@ class User {
 			
 				console.log(error)	
 			})
+	
+	}
+
+	getOrders(){
+	
+		const db = getDb()
+		//return db.collection('orders').find()
+	
+	
 	
 	}
 
