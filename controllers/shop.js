@@ -31,9 +31,7 @@ exports.getIndex = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
 	req.user.getCart()
-	.then((cart)=>{
-		return cart.getProducts()
-		.then((products)=>{		
+	.then((products)=>{
 		res.render('shop/cart', {
                 path: '/cart',
                 pageTitle: 'Your Cart',
@@ -41,10 +39,6 @@ exports.getCart = (req, res, next) => {
             });
         
 		
-		})
-		.catch((error)=>{
-			console.log(error)	
-		})
 	})
 	.catch((error)=>{	
 		console.log(error)	
@@ -59,6 +53,7 @@ exports.postCart = (req, res, next) => {
 		return req.user.addToCart(product)	
 			.then((result)=>{
 				console.log(result)	
+				return res.redirect('/cart')
 			})
 			.catch((error)=>{
 				console.log(error)	
