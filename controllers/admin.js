@@ -64,15 +64,29 @@ exports.postEditProduct = (req, res, next) => {
     const updatedPrice = req.body.price;
     const updatedImageUrl = req.body.imageUrl;
     const updatedDescription = req.body.description;
-    const product = new Product(updatedTitle, updatedPrice, updatedDescription, updatedImageUrl, prodId)
-    product.save() 
-        .then((result) => {
-            console.log('Updated Product')
-            return res.redirect('/admin/products')
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+
+    Product.findById(prodId)
+	// Using mongoose if save is called on an existing product it will automatically not be saved as a new product but only as changes to the existing product
+	.then((product)=>{	
+		product.title = updatedTitle
+		product.price = updatedPrice
+		product,imageUrl = updatedImageUrl
+		product.description = updatedDescription
+	    	return product.save() 
+	
+	})
+
+	.then((result) => {
+	    console.log('Updated Product')
+	    return res.redirect('/admin/products')
+	})
+	.catch((error) => {
+	    console.log(error)
+	})
+	.catch((error)=>{
+	
+		console.log(error)	
+	})
 
 
 };
@@ -80,7 +94,7 @@ exports.postEditProduct = (req, res, next) => {
 
 
 exports.getProducts = (req, res, next) => {
-	Product.fetchAll()
+	Product.find()
         .then((products) => {
             res.render('admin/products', {
                 prods: products,
