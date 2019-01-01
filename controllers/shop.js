@@ -123,8 +123,12 @@ exports.postOrder = (req,res,next) => {
 		return order.save()
 	})
 	.then((result)=>{
+		return req.user.clearCart()
+	})
+	.then((response)=>{
 	
-		return res.redirect('/orders')	
+		res.redirect('/orders')	
+	
 	})
 
 	.catch(err=> console.log(err)) } 
