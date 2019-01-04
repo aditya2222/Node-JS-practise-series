@@ -3,6 +3,7 @@ const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const session = require('express-session')
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
@@ -18,6 +19,13 @@ const authRoutes = require('./routes/auth')
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+
+	secret: 'My Secret',
+	resave: false,
+	saveUninitialized: false,
+
+}))
 
 app.use((req, res, next) => {
   User.findById('5c28d7d6d1236114e2980b45')
@@ -36,7 +44,7 @@ app.use(errorController.get404);
 
 mongoose
   .connect(
-    'mongodb+srv://admin:tiktik123@cluster0-5t9yf.mongodb.net/shop?retryWrites=true'
+    'mongodb+srv://admin:tiktik123@cluster0-5t9yf.mongodb.net/shop?retryWrites=true', {useNewUrlParser:true}
   )
   .then(result => {
 	  console.log('Connected')
