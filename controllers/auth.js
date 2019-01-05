@@ -3,7 +3,7 @@ const User = require('../models/user')
 exports.getLogin = (req,res,next)=>{
 
 	const isLoggedIn = 
-		console.log(req.session.isLoggedIn)
+		//console.log(req.session.isLoggedIn)
 	res.render('auth/login',{	
 		path: '/login',
 		pageTitle: 'Login',
@@ -24,5 +24,17 @@ exports.postLogin = (req,res,next) =>{
 		.catch((error)=>{
 			console.log(error)	
 		})
+
+}
+
+
+exports.postLogout = (req, res, next) => {
+
+	req.session.destroy((error)=>{
+			
+		console.log(error)
+		res.redirect('/')
+	})
+
 
 }
