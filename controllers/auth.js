@@ -18,21 +18,37 @@ exports.getSignup = (req, res, next) => {
 };
 
 exports.postLogin = (req, res, next) => {
-    User.findById('5c28d7d6d1236114e2980b45')
+    const email = req.body.email
+    const password = req.body.password
+    User.findOne({email:email})
         .then(user => {
-            req.session.isLoggedIn = true;
-            req.session.user = user;
-            req.session.save(err => {
-                console.log(err);
-                console.log('Saved')
-                res.redirect('/');
-            });
+            if(!user) {
+                return res.redirect('/login')
+            }
+            bcrypt.compare(password, user.password)
+                .then((response)=>{
+                    if(response){
+                        req.session.isLoggedIn = true;
+                        req.session.user = user;
+                        return req.session.save(err => {
+                            console.log(err);
+                            console.log('Saved')
+                            res.redirect('/');
+                        });
+                    }
+                    else{
+                        res.redirect('/login')
+                    }
+                })
+                .catch((error)=>{
+                    res.redirect('/login')
+                })
+    
         })
         .catch(err => console.log(err));
 };
 
 exports.postSignup = (req, res, next) => {
-
     const email = req.body.email;
     const password = req.body.password;
     const confirmPassword = req.body.confirmPassword;
@@ -43,9 +59,8 @@ exports.postSignup = (req, res, next) => {
                 return res.redirect('/signup')
             }
             return bcrypt.hash(password, 12)
-        })
-        .then(hashedPassword => {
-            const newuser = new User({
+                    .then(hashedPassword => {
+                const newuser = new User({
                 email: email,
                 password: hashedPassword,
                 cart: {items: []}
@@ -55,6 +70,8 @@ exports.postSignup = (req, res, next) => {
         .then(result => {
             res.redirect('/login')
         })
+        })
+
         .catch((err) => {
             console.log(err)
         })
