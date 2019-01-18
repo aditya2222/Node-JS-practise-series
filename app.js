@@ -8,7 +8,6 @@ const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf')
 
 const errorController = require('./controllers/error');
-
 const User = require('./models/user');
 
 const MONGODB_URI =
