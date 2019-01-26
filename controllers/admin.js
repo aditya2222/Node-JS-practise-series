@@ -80,6 +80,7 @@ exports.postEditProduct = (req, res, next) => {
     .catch(err => console.log(err));
 };
 
+
 exports.getProducts = (req, res, next) => {
   Product.find({userId: req.user._id})
     // .select('title price -_id')
