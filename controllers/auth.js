@@ -8,7 +8,7 @@ const transporter = nodemailer.createTransport(sendgridTransport({
 
 	auth: {
 
-		api_key:'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'
+		api_key:'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'
 	
 	}
 
@@ -195,17 +195,18 @@ exports.postReset  = (req, res, next) => {
 			
 			})
 		.then(result => {
-
 			transporter.sendMail({
 
 				to: req.body.email,
 				from: 'shop@node-complete.com',
 				subject: 'Password Reset',
-				html: '<p>Hello World</p>'
+				html: `
+				<p> You requested for a password reset </p>
+				<p> Please click this <a href="http://localhost:3000/new-password/${token}">Link</a> to reset your password </p>
+				`
 			
 			})
 			.then(result=>{
-			
 				res.redirect('/')
 			})
 			.catch(err=>{
@@ -219,6 +220,46 @@ exports.postReset  = (req, res, next) => {
 		})
 	
 	})
+
+
+}
+
+
+
+exports.getNewPassword = (req, res, next) => {
+
+	const token = req.params.token;
+	console.log(token)
+	User.findOne({resetToken: token, resetTokenExpiration:{$gt: Date.now()}})
+		.then(user => {
+
+			if(!user){
+			
+				return res.redirect('/')
+			
+			}
+
+		  res.render('auth/new-password',{
+		      path:'/new-password',
+		      pageTitle: 'New Password',
+		      errorMessage: message,
+		      userId: user._id.toString() 
+		  })
+		})
+		.catch(err => {
+		
+			console.log(err)
+		})
+
+	let message = req.flash('error')
+
+	if(message.length > 0){
+		message = message[0]
+	}
+
+	else{
+		message=null
+	}
 
 
 }
