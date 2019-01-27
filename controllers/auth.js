@@ -3,13 +3,14 @@ const User = require('../models/user');
 const nodemailer = require('nodemailer')
 const sendgridTransport = require('nodemailer-sendgrid-transport')
 const crypto = require('crypto')
+const { validationResult } = require('express-validator/check')
 
 const transporter = nodemailer.createTransport(sendgridTransport({
 
 	auth: {
 
 		api_key:'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'
-	
+
 	}
 
 }))
@@ -17,12 +18,12 @@ const transporter = nodemailer.createTransport(sendgridTransport({
 exports.getLogin = (req, res, next) => {
 	let  message = req.flash('error')
 	if(message.length>0){
-	
+
 		message = message[0]
-	
+
 	}
 	else{
-	
+
 		message = null
 	}
 	res.render('auth/login', {
@@ -31,19 +32,18 @@ exports.getLogin = (req, res, next) => {
 		errorMessage: message
 	});
 };
-
 exports.getSignup = (req, res, next) => {
 	let message = req.flash('error')
 	if(message){
 
 		message = message[0]
-	
+
 	}
 
 	else{
-	
+
 		message = null
-	
+
 	}
 	res.render('auth/signup', {
 		path: '/signup',
@@ -89,6 +89,17 @@ exports.postSignup = (req, res, next) => {
 	const email = req.body.email;
 	const password = req.body.password;
 	const confirmPassword = req.body.confirmPassword;
+	const errors = validationResult(req)
+
+	if(!errors.isEmpty()){
+	
+		console.log(errors.array())
+		return res.status(422).render('auth/signup', {
+			path: '/signup',
+			pageTitle: 'Signup',
+			errorMessage: errors.array()[0].msg
+		});
+	}
 
 	User.findOne({email: email})
 		.then((user) => {
@@ -112,15 +123,15 @@ exports.postSignup = (req, res, next) => {
 						from: 'shop@node-complete.com',
 						subject: 'Signup Succeeded',
 						html: '<h1> successfully signed up </h1>'
-					
+
 					})
-					.then((result)=>{
-						res.redirect('/login')
-					})
-					.catch((error)=>{
-					
-						console.log(error)
-					})
+						.then((result)=>{
+							res.redirect('/login')
+						})
+						.catch((error)=>{
+
+							console.log(error)
+						})
 				})
 		})
 
@@ -155,12 +166,12 @@ exports.getReset = (req,res,next) =>{
 
 
 	res.render('auth/reset',{
-	
+
 		path:'reset',
 		pageTitle:'Reset Password',
 		errorMessage: message
 
-	
+
 	})
 
 }
@@ -170,9 +181,9 @@ exports.postReset  = (req, res, next) => {
 
 
 	crypto.randomBytes(32, (err, buffer)=>{
-	
+
 		if(err){
-		
+
 			console.log(err)
 			return res.redirect('/reset')
 		}
@@ -182,7 +193,7 @@ exports.postReset  = (req, res, next) => {
 			.then((user)=>{
 
 				if(!user){
-				
+
 					req.flash('error','No account with that email found')
 					return res.redirect('/reset')
 				}
@@ -190,33 +201,33 @@ exports.postReset  = (req, res, next) => {
 				user.resetToken = token;
 				user.resetTokenExpiration = Date.now() + 3600000
 				return user.save()
-			
-			})
-		.then(result => {
-			transporter.sendMail({
 
-				to: req.body.email,
-				from: 'shop@node-complete.com',
-				subject: 'Password Reset',
-				html: `
-				<p> You requested for a password reset </p>
-				<p> Please click this <a href="http://localhost:3000/new-password/${token}">Link</a> to reset your password </p>
-				`
-			
 			})
-			.then(result=>{
-				res.redirect('/')
+			.then(result => {
+				transporter.sendMail({
+
+					to: req.body.email,
+					from: 'shop@node-complete.com',
+					subject: 'Password Reset',
+					html: `
+					<p> You requested for a password reset </p>
+					<p> Please click this <a href="http://localhost:3000/new-password/${token}">Link</a> to reset your password </p>
+					`
+
+				})
+					.then(result=>{
+						res.redirect('/')
+					})
+					.catch(err=>{
+
+						console.log(err)
+					})
 			})
-			.catch(err=>{
-			
-				console.log(err)
+			.catch((error)=>{
+
+				console.log(error)
 			})
-		})
-		.catch((error)=>{
-		
-			console.log(error)
-		})
-	
+
 	})
 
 
@@ -232,21 +243,21 @@ exports.getNewPassword = (req, res, next) => {
 		.then(user => {
 
 			if(!user){
-			
+
 				return res.redirect('/')
-			
+
 			}
 
-		  res.render('auth/new-password',{
-		      path:'/new-password',
-		      pageTitle: 'New Password',
-		      errorMessage: message,
-		      userId: user._id.toString(),
-		      passwordToken: token 
-		  })
+			res.render('auth/new-password',{
+				path:'/new-password',
+				pageTitle: 'New Password',
+				errorMessage: message,
+				userId: user._id.toString(),
+				passwordToken: token 
+			})
 		})
 		.catch(err => {
-		
+
 			console.log(err)
 		})
 
@@ -262,7 +273,6 @@ exports.getNewPassword = (req, res, next) => {
 
 
 }
-
 
 exports.postNewPassword = (req, res, next) => {
 
