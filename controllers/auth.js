@@ -83,8 +83,7 @@ exports.postLogin = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
-    const confirmPassword = req.body.confirmPassword;
-    const errors = validationResult(req)
+    const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
 
@@ -96,39 +95,34 @@ exports.postSignup = (req, res, next) => {
         });
     }
 
-    User.findOne({email: email})
-        .then((user) => {
-            if (user) {
-                req.flash('error', 'Email already exists')
-                return res.redirect('/signup')
-            }
-            return bcrypt.hash(password, 12)
-                .then(hashedPassword => {
-                    const newuser = new User({
-                        email: email,
-                        password: hashedPassword,
-                        cart: {items: []}
-                    });
-                    return newuser.save()
+
+    bcrypt.hash(password, 12)
+        .then(hashedPassword => {
+            const newuser = new User({
+                email: email,
+                password: hashedPassword,
+                cart: {items: []}
+            });
+            return newuser.save()
+        })
+        .then(result => {
+            transporter.sendMail({
+
+                to: email,
+                from: 'shop@node-complete.com',
+                subject: 'Signup Succeeded',
+                html: '<h1> successfully signed up </h1>'
+
+            })
+                .then((result) => {
+                    res.redirect('/login')
                 })
-                .then(result => {
-                    transporter.sendMail({
+                .catch((error) => {
 
-                        to: email,
-                        from: 'shop@node-complete.com',
-                        subject: 'Signup Succeeded',
-                        html: '<h1> successfully signed up </h1>'
-
-                    })
-                        .then((result) => {
-                            res.redirect('/login')
-                        })
-                        .catch((error) => {
-
-                            console.log(error)
-                        })
+                    console.log(error)
                 })
         })
+
 
         .catch((err) => {
             console.log(err)
