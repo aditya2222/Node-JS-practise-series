@@ -1,5 +1,5 @@
 const Product = require('../models/product');
-const {validationResult} = require('express-validator/check')
+const { validationResult } = require('express-validator/check')
 
 exports.getAddProduct = (req, res, next) => {
 	res.render('admin/edit-product', {
@@ -20,25 +20,25 @@ exports.postAddProduct = (req, res, next) => {
 	const errors = validationResult(req)
 
 
-	if(!errors.isEmpty()){
+	if (!errors.isEmpty()) {
 
 
 		console.log(errors.array())
-	      return res.status(422).render('admin/edit-product', {
-		pageTitle: 'Add Product',
-		path: '/admin/edit-product',
-		editing: false,
-		hasError: true,
-		product: {
-		
-			title:title,
-			imageUrl: imageUrl,
-			price:price,
-			description:description
-		},
-		      errorMessage: errors.array()[0].msg
+		return res.status(422).render('admin/edit-product', {
+			pageTitle: 'Add Product',
+			path: '/admin/edit-product',
+			editing: false,
+			hasError: true,
+			product: {
 
-	      });
+				title: title,
+				imageUrl: imageUrl,
+				price: price,
+				description: description
+			},
+			errorMessage: errors.array()[0].msg
+
+		});
 
 	}
 	const product = new Product({
@@ -90,6 +90,27 @@ exports.postEditProduct = (req, res, next) => {
 	const updatedPrice = req.body.price;
 	const updatedImageUrl = req.body.imageUrl;
 	const updatedDesc = req.body.description;
+	const errors = validationResult(req)
+
+	if (!errors.isEmpty()) {
+
+		return res.status(422).render('admin/edit-product', {
+			pageTitle: 'Add Product',
+			path: '/admin/edit-product',
+			editing: true,
+			hasError: true,
+			product: {
+
+				title: updatedTitle,
+				imageUrl: updatedImageUrl,
+				price: updatedPrice,
+				description: updatedDesc
+			},
+			errorMessage: errors.array()[0].msg
+
+		});
+
+	}
 
 	Product.findById(prodId)
 		.then(product => {
@@ -112,8 +133,8 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.getProducts = (req, res, next) => {
 	Product.find({ userId: req.user._id })
-	// .select('title price -_id')
-	// .populate('userId', 'name')
+		// .select('title price -_id')
+		// .populate('userId', 'name')
 		.then(products => {
 			console.log(products);
 			res.render('admin/products', {
