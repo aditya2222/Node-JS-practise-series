@@ -4,8 +4,8 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
-const csrf = require('csurf')
-const flash = require('connect-flash')
+const csrf = require('csurf');
+const flash = require('connect-flash');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
@@ -25,7 +25,7 @@ app.set('views', 'views');
 const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
-const csrfProtection = csrf()
+const csrfProtection = csrf();
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -41,26 +41,6 @@ app.use(
 
 app.use(csrfProtection)
 app.use(flash())
-
-
-app.use((req, res, next) => {
-    if (!req.session.user) {
-        return next();
-    }
-    User.findById(req.session.user._id)
-        .then(user => {
-            if (!user) {
-                return next();
-            }
-            req.user = user;
-            next();
-        })
-        .catch(err => {
-            throw new Error(err)
-            //next();
-        });
-});
-
 app.use((req, res, next) => {
 
     res.locals.isAuthenticated = req.session.isLoggedIn;
@@ -68,16 +48,43 @@ app.use((req, res, next) => {
     next()
 })
 
+app.use((req, res, next) => {
+    // throw new Error('Sync Dummy')
+    if (!req.session.user) {
+        return next();
+    }
+    User.findById(req.session.user._id)
+        .then(user => {
+            // throw new Error('Dummy')
+            if (!user) {
+                return next();
+            }
+            req.user = user;
+            next();
+        })
+        .catch(err => {
+            next(new Error(err))
+            // Does not work for errors inside async code such as inside then block
+            // throw new Error(err)
+            //next();
+        });
+});
+
+
 app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
-
-app.get('/500', errorController.get505)
 app.use(errorController.get404);
+app.get('/500', errorController.get505);
+
 // express automatically detects that below is a error handling middleware
 app.use((error, req, res, next) => {
 
-    res.redirect('/500')
+    res.status(404).render('500', {
+        pageTitle: 'Page Not Found',
+        path: '/505',
+        isAuthenticated: req.session.isLoggedIn
+    });
 
 });
 

@@ -10,7 +10,7 @@ exports.get404 = (req, res, next) => {
 
 
 exports.get505 = (req, res, next) => {
-  res.status(404).render('500', {
+  res.status(500).render('500', {
     pageTitle: 'Page Not Found',
     path: '/505',
     isAuthenticated: req.session.isLoggedIn
