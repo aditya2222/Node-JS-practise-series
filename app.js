@@ -49,16 +49,16 @@ app.use((req, res, next) => {
     }
     User.findById(req.session.user._id)
         .then(user => {
-		if(!user){	
-			return next();
-		}
+            if (!user) {
+                return next();
+            }
             req.user = user;
             next();
         })
-        .catch(err=>{	
-		throw new Error(err)
-		//next();
-	});
+        .catch(err => {
+            throw new Error(err)
+            //next();
+        });
 });
 
 app.use((req, res, next) => {
@@ -74,11 +74,17 @@ app.use(authRoutes);
 
 app.get('/500', errorController.get505)
 app.use(errorController.get404);
+// express automatically detects that below is a error handling middleware
+app.use((error, req, res, next) => {
+
+    res.redirect('/500')
+
+});
 
 mongoose
     .connect(MONGODB_URI, {useNewUrlParser: true})
     .then(result => {
-        console.log('Connected')
+        console.log('Connected');
         app.listen(3000);
     })
     .catch(err => {
