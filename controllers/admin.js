@@ -188,15 +188,18 @@ exports.getProducts = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
     const prodId = req.body.productId;
-    Product.deleteOne({id: prodId, userId: req.user._id})
-        .then(() => {
-            console.log('DESTROYED PRODUCT');
+    console.log('product id: ' + prodId + 'user id: ' + req.user._id)
+    Product.deleteOne({_id: prodId, userId: req.user._id})
+        .then((response) => {
+            console.log(response);
+            console.log('DESTROYED PRODUCT FROM DB');
             res.redirect('/admin/products');
         })
         .catch(err => {
-            const error = new Error(err);
-            error.httpStatusCode = 500;
-            return next(error)
+            // const error = new Error(err);
+            // error.httpStatusCode = 500;
+            // return next(error)
+            console.log(err)
         });
 };
 
