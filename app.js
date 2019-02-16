@@ -8,6 +8,7 @@ const csrf = require('csurf');
 const flash = require('connect-flash');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
+const multer = require('multer')
 
 const MONGODB_URI =
     'mongodb+srv://admin:tiktik123@cluster0-5t9yf.mongodb.net/shop';
@@ -27,7 +28,8 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const csrfProtection = csrf();
 
-app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ dest: 'images' }).single('image'))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
     session({
@@ -89,7 +91,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-    .connect(MONGODB_URI, {useNewUrlParser: true})
+    .connect(MONGODB_URI, { useNewUrlParser: true })
     .then(result => {
         console.log('Connected');
         app.listen(3000);
