@@ -8,36 +8,35 @@ const csrf = require('csurf');
 const flash = require('connect-flash');
 const errorController = require('./controllers/error');
 const User = require('./models/user');
-const multer = require('multer')
+const multer = require('multer');
 
 const MONGODB_URI =
-  'mongodb+srv://admin:tiktik123@cluster0-5t9yf.mongodb.net/shop';
+    'mongodb+srv://admin:tiktik123@cluster0-5t9yf.mongodb.net/shop';
 
 const app = express();
 const store = new MongoDBStore({
-  uri: MONGODB_URI,
-  collection: 'sessions'
+    uri: MONGODB_URI,
+    collection: 'sessions'
 });
 
 
 const fileStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'images')
-  },
-  filename: (req, file, cb) => {
-    cb(null, new Date().toISOString() + '-' + file.originalname)
-  },
-})
+    destination: (req, file, cb) => {
+        cb(null, 'images')
+    },
+    filename: (req, file, cb) => {
+        cb(null, new Date().toISOString() + '-' + file.originalname)
+    },
+});
 
 const fileFilter = (req, file, cb) => {
-  if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
-    cb(null, true)
-  }
-  else {
-    cb(null, false)
-  }
+    if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
+        cb(null, true)
+    } else {
+        cb(null, false)
+    }
 
-}
+};
 
 
 app.set('view engine', 'ejs');
@@ -48,19 +47,18 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const csrfProtection = csrf();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'))
+app.use(bodyParser.urlencoded({extended: false})); app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 
 app.use(
-  session({
-    secret: 'my secret',
-    resave: false,
-    saveUninitialized: false,
-    store: store
-  })
+    session({
+        secret: 'my secret',
+        resave: false,
+        saveUninitialized: false,
+        store: store
+    })
 );
 
 
@@ -68,31 +66,31 @@ app.use(csrfProtection)
 app.use(flash())
 app.use((req, res, next) => {
 
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken()
-  next()
+    res.locals.isAuthenticated = req.session.isLoggedIn;
+    res.locals.csrfToken = req.csrfToken()
+    next()
 })
 
 app.use((req, res, next) => {
-  // throw new Error('Sync Dummy')
-  if (!req.session.user) {
-    return next();
-  }
-  User.findById(req.session.user._id)
-    .then(user => {
-      // throw new Error('Dummy')
-      if (!user) {
+    // throw new Error('Sync Dummy')
+    if (!req.session.user) {
         return next();
-      }
-      req.user = user;
-      next();
-    })
-    .catch(err => {
-      next(new Error(err))
-      // Does not work for errors inside async code such as inside then block
-      // throw new Error(err)
-      //next();
-    });
+    }
+    User.findById(req.session.user._id)
+        .then(user => {
+            // throw new Error('Dummy')
+            if (!user) {
+                return next();
+            }
+            req.user = user;
+            next();
+        })
+        .catch(err => {
+            next(new Error(err))
+            // Does not work for errors inside async code such as inside then block
+            // throw new Error(err)
+            //next();
+        });
 });
 
 
@@ -105,20 +103,20 @@ app.get('/500', errorController.get505);
 // express automatically detects that below is a error handling middleware
 app.use((error, req, res, next) => {
 
-  res.status(404).render('500', {
-    pageTitle: 'Page Not Found',
-    path: '/505',
-    isAuthenticated: req.session.isLoggedIn
-  });
+    res.status(404).render('500', {
+        pageTitle: 'Page Not Found',
+        path: '/505',
+        isAuthenticated: req.session.isLoggedIn
+    });
 
 });
 
 mongoose
-  .connect(MONGODB_URI, { useNewUrlParser: true })
-  .then(result => {
-    console.log('Connected');
-    app.listen(3000);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+    .connect(MONGODB_URI, {useNewUrlParser: true})
+    .then(result => {
+        console.log('Connected');
+        app.listen(3000);
+    })
+    .catch(err => {
+        console.log(err);
+    });
