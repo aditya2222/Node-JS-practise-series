@@ -2,7 +2,6 @@ const Product = require('../models/product');
 const Order = require('../models/order');
 const fs = require('fs');
 const path = require('path')
-const multer = require('multer')
 
 
 exports.getProducts = (req, res, next) => {
@@ -154,6 +153,21 @@ exports.getOrders = (req, res, next) => {
 exports.getInvoice = (req, res, next) => {
 
   const orderId = req.params.orderId;
+  Order.findById(orderId)
+    .then((order) => {
+
+      if (!order) {
+        return next(new Error('No order found'))
+      }
+
+      if (order.user.userId.toString() !== req.user._id.toString()) {
+
+        return next(new Error('Unautorized'))
+      }
+
+    }).catch((error) => {
+      next(error)
+    })
   const invoiceName = 'invoice-' + orderId + '.pdf';
   const invoicePath = path.join('data', 'invoices', invoiceName)
 
