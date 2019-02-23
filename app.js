@@ -47,7 +47,8 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const csrfProtection = csrf();
 
-app.use(bodyParser.urlencoded({extended: false})); app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'))
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
@@ -112,7 +113,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-    .connect(MONGODB_URI, {useNewUrlParser: true})
+    .connect(MONGODB_URI, { useNewUrlParser: true })
     .then(result => {
         console.log('Connected');
         app.listen(3000);
