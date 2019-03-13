@@ -43,18 +43,29 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-    console.log('this is the index page')
     const page = req.query.page;
-    console.log(page)
+    let totalItems;
 
-    Product.find()
-        .skip((page - 1) * ITEMS_PER_PAGE)
-        .limit(ITEMS_PER_PAGE)
+    Product.find().countDocuments()
+        .then((numProducts) => {
+            totalItems = numProducts
+            return Product.find().skip((page - 1) * ITEMS_PER_PAGE).limit(ITEMS_PER_PAGE)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+
         .then(products => {
             res.render('shop/index', {
                 prods: products,
                 pageTitle: 'Shop',
                 path: '/',
+                totalProducts: totalItems,
+                hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+                hasPreviousPage: page > 1,
+                nextPage: page + 1,
+                previousPage: page - 1,
+                lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
             });
         })
         .catch(err => {
@@ -117,7 +128,7 @@ exports.postOrder = (req, res, next) => {
         .execPopulate()
         .then(user => {
             const products = user.cart.items.map(i => {
-                return {quantity: i.quantity, product: {...i.productId._doc}};
+                return { quantity: i.quantity, product: { ...i.productId._doc } };
             });
             const order = new Order({
                 user: {
@@ -142,7 +153,7 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-    Order.find({'user.userId': req.user._id})
+    Order.find({ 'user.userId': req.user._id })
         .then(orders => {
             res.render('shop/orders', {
                 path: '/orders',
@@ -208,8 +219,8 @@ exports.getInvoice = (req, res, next) => {
 
 
         }).catch((error) => {
-        next(error)
-    })
+            next(error)
+        })
     // fs.readFile(invoicePath, (error, data) => {
     //   if (error) {
     //     return next(err)
