@@ -78,28 +78,8 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(err => {
-
-      //	return res.status(500).render('admin/edit-product', {
-      //		pageTitle: 'Add Product',
-      //		path: '/admin/add-product',
-      //		editing: false,
-      //		hasError: true,
-      //		product: {
-
-      //			title: title,
-      //			imageUrl: imageUrl,
-      //			price: price,
-      //			description: description
-      //		},
-      //		errorMessage: 'Database Operation Failed, please try again',
-      //		validationErrors: []
-
-      //	});
-
-      // res.redirect('/500')
       const error = new Error(err);
       error.httpStatusCode = 500;
-      // We are letting express know about the error and hence it will skip all other middlewares and jump onto the error handling middleware
       return next(error)
 
     });
@@ -209,8 +189,9 @@ exports.getProducts = (req, res, next) => {
     });
 };
 
-exports.postDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
+exports.deleteProduct = (req, res, next) => {
+  const prodId = req.params.productId;
+
   Product.findById(prodId)
     .then((product) => {
       if (!product) {
@@ -222,13 +203,14 @@ exports.postDeleteProduct = (req, res, next) => {
       return Product.deleteOne({ _id: prodId, userId: req.user._id })
     })
     .then((response) => {
-      console.log('DESTROYED PRODUCT');
-      res.redirect('/admin/products');
+      res.status(200).json({
+        message: 'Success!'
+      });
+
     })
     .catch(err => {
-      const error = new Error(err);
-      error.httpStatusCode = 500;
-      console.log(err)
-      return next(error)
+      res.status(500).json({
+        message: 'Deleting Product Failed!'
+      })
     });
 };
