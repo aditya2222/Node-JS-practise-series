@@ -237,17 +237,5 @@ exports.getInvoice = (req, res, next) => {
         }).catch((error) => {
             next(error)
         })
-    // fs.readFile(invoicePath, (error, data) => {
-    //   if (error) {
-    //     return next(err)
-    //   }
-    //   res.setHeader('Content-Type', 'application/pdf')
-    //   res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"')
-    //   res.send(data)
-    // })
-    //  const file = fs.createReadStream(invoicePath);
-    //
-    //  res.setHeader('Content-Type', 'application/pdf')
-    //  res.setHeader('Content-Disposition', 'inline; filename="' + invoiceName + '"')
-    //  file.pipe(res)
+
 };
