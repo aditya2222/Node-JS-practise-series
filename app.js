@@ -11,7 +11,7 @@ const User = require('./models/user');
 const multer = require('multer');
 
 const MONGODB_URI =
-    'mongodb+srv://admin:tiktik123@cluster0-5t9yf.mongodb.net/shop';
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-5t9yf.mongodb.net/${process.env.MONGO_DEFAULT_DATABASE}`;
 
 const app = express();
 const store = new MongoDBStore({
@@ -47,8 +47,8 @@ const shopRoutes = require('./routes/shop');
 const authRoutes = require('./routes/auth');
 const csrfProtection = csrf();
 
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('image'))
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(multer({storage: fileStorage, fileFilter: fileFilter}).single('image'))
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
@@ -113,10 +113,10 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-    .connect(MONGODB_URI, { useNewUrlParser: true })
+    .connect(MONGODB_URI, {useNewUrlParser: true})
     .then(result => {
         console.log('Connected');
-        app.listen(3000);
+        app.listen(process.env.PORT || 3000);
     })
     .catch(err => {
         console.log(err);

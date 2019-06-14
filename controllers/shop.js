@@ -1,8 +1,8 @@
 const Product = require('../models/product');
 const Order = require('../models/order');
-const path = require('path')
-const PDFDocument = require('pdfkit')
-const fs = require('fs')
+const path = require('path');
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
 
 const ITEMS_PER_PAGE = 1;
 
@@ -144,7 +144,7 @@ exports.postOrder = (req, res, next) => {
         .execPopulate()
         .then(user => {
             const products = user.cart.items.map(i => {
-                return { quantity: i.quantity, product: { ...i.productId._doc } };
+                return {quantity: i.quantity, product: {...i.productId._doc}};
             });
             const order = new Order({
                 user: {
@@ -169,7 +169,7 @@ exports.postOrder = (req, res, next) => {
 };
 
 exports.getOrders = (req, res, next) => {
-    Order.find({ 'user.userId': req.user._id })
+    Order.find({'user.userId': req.user._id})
         .then(orders => {
             res.render('shop/orders', {
                 path: '/orders',
@@ -235,7 +235,7 @@ exports.getInvoice = (req, res, next) => {
 
 
         }).catch((error) => {
-            next(error)
-        })
+        next(error)
+    })
 
 };
